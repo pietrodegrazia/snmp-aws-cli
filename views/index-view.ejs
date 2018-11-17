@@ -1,0 +1,31 @@
+<%- include header.ejs %>
+
+<%- include side-menu.ejs %>
+
+<main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
+  <h1 class="bd-title" id="content">Regions</h1>
+  <p class="bd-lead">Choose your region.</p>
+  <!-- <h2 id="quick-start">Suas Stations</h2> -->
+  <p>Current region: <%= currentRegion.name %>.</p>
+
+  <div class="dropdown">
+    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <%= currentRegion.name %>
+    </a>
+
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+      <% regions.forEach(function(region){ %>
+        <a class="dropdown-item" href="/regions/<%= region.name %>"><%= region.name %></a>
+      <% }); %>
+    </div>
+  </div>
+
+</main>
+
+  
+<%- include scripts.ejs %>
+
+  <script type="text/javascript" charset="utf-8" async defer>
+  </script>
+
+<%- include footer.ejs %>

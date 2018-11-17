@@ -9,6 +9,8 @@ var agent = snmp.createAgent({
 	name: "AWS-CLI-MIB-AGENT"
 });
 
+let currentRegion = "sa-east"
+
 agent.request({ oid: '.1.3.6.1.4.1.1.2.2', handler: function (req) {
 	console.log("OID: Current region")
 	const op = req.op
@@ -18,7 +20,7 @@ agent.request({ oid: '.1.3.6.1.4.1.1.2.2', handler: function (req) {
 	case SNMP_GET_REQUEST:
 		const val = snmp.data.createData({
 			type: 'OctetString',
-    		value: "sa-east"
+    		value: currentRegion
     	})
 		snmp.provider.readOnlyScalar(req, val)
 	case SNMP_SET_REQUEST:
@@ -27,11 +29,12 @@ agent.request({ oid: '.1.3.6.1.4.1.1.2.2', handler: function (req) {
 			req.done(snmp.pdu.wrongType)
 			return
 		}
-		const val2 = snmp.data.createData({
+    	currentRegion = String(req.value._value)
+    	const val2 = snmp.data.createData({
 			type: 'OctetString',
-    		value: "sa-east"
+    		value: currentRegion
     	})
-		console.log("Value: " + req.value._value)
+		console.log("Value: " + currentRegion)
 		snmp.provider.writableScalar(req, val2)
 	}
 }});
