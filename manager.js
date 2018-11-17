@@ -1,6 +1,6 @@
-var snmp = require ("net-snmp");
+const snmp = require ("net-snmp")
 
-var options = {
+const options = {
     port: 161,
     retries: 1,
     timeout: 5000,
@@ -8,56 +8,63 @@ var options = {
     trapPort: 162,
     version: snmp.Version2c,
     idBitsSize: 16
-};
+}
 
-var session = snmp.createSession ("127.0.0.1", "public", options);
+class SNMPManager {
+    static getCurrentRegion(callback) {
+        _session.get (['1.3.6.1.4.1.1.2.2.0'], function (error, varbinds) {
+            if (error) {
+                console.error ("Error")
+                console.error (error)
+                callback(undefined)
+                return
+            }
+            
+            // console.error ("No error")
+            if (snmp.isVarbindError(varbinds[0])) {
+                console.error (snmp.varbindError (varbinds[0]))
+                callback(undefined)
+                return
+            } else {
+                // console.log (varbinds[0].oid + " = " + varbinds[0].value)
+                callback(String(varbinds[0].value))
+            }
+        })
+    }
 
-// var oids = ['1.3.6.1.4.1.1.2.2.0'];
+    static setCurrentRegion(region, callback) {
+        const varbinds = [{
+            oid: "1.3.6.1.4.1.1.2.2.0",
+            type: snmp.ObjectType.OctetString,
+            value: region
+        }]
 
-// session.get (oids, function (error, varbinds) {
-//     if (error) {
-//     	console.error ("Error");
-//         console.error (error);
-//     } else {
-//     	console.error ("No error");
-//         for (var i = 0; i < varbinds.length; i++)
-//             if (snmp.isVarbindError (varbinds[i]))
-//                 console.error (snmp.varbindError (varbinds[i]))
-//             else
-//                 console.log (varbinds[i].oid + " = " + varbinds[i].value);
-//     }
+        _session.set (varbinds, function (error, varbinds) {
+            if (error) {
+                console.error (error.toString ())
+                callback(undefined)
+                return 
+            }
 
-//     // If done, close the session
-//     session.close ();
-// });
+            if (snmp.isVarbindError(varbinds[0])) {
+                console.error(snmp.varbindError(varbinds[0]))
+                callback(undefined)
+                return
+            } else {
+                console.log (varbinds[0].oid + "|" + varbinds[0].value)
+                callback(String(varbinds[0].value))
+            }
+        })
+    }
+}
+module.exports = SNMPManager
+
+
+const _session = snmp.createSession("127.0.0.1", "public", options)
+
+
 
 // session.trap (snmp.TrapType.LinkDown, function (error) {
 //     if (error)
 //         console.error (error);
 // });
-
-
-var varbinds = [
-    {
-        oid: "1.3.6.1.4.1.1.2.2.0",
-        type: snmp.ObjectType.Integer,
-        value: 10
-    }
-];
-
-session.set (varbinds, function (error, varbinds) {
-    if (error) {
-        console.error (error.toString ());
-    } else {
-        for (var i = 0; i < varbinds.length; i++) {
-            // for version 1 we can assume all OIDs were successful
-            console.log (varbinds[i].oid + "|" + varbinds[i].value);
-        
-            // for version 2c we must check each OID for an error condition
-            if (snmp.isVarbindError (varbinds[i]))
-                console.error (snmp.varbindError (varbinds[i]));
-            else
-                console.log (varbinds[i].oid + "|" + varbinds[i].value);
-        }
-    }
-});
