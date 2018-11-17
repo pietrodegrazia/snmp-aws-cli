@@ -5,7 +5,8 @@
   "main": "agent.js",
   "dependencies": {
     "net-snmp": "^1.2.4",
-    "snmpjs": "git+https://github.com/VoltServer/node-snmpjs.git"
+    "snmpjs": "git+https://github.com/VoltServer/node-snmpjs.git",
+    "aws-sdk": "^2.358.0"
   },
   "devDependencies": {},
   "scripts": {
