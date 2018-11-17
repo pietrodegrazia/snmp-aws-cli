@@ -63,6 +63,49 @@ module.exports = SNMPManager
 const _session = snmp.createSession("127.0.0.1", "public", options)
 
 
+function getNextRegion(oid) {
+    _session.getNext([oid], function (error, varbinds) {
+        if (error) {
+            console.error ("Error")
+            console.error (error)
+            // callback(undefined)
+            return
+        }
+    
+        if (snmp.isVarbindError(varbinds[0])) {
+            console.error ("No error")
+            console.error (snmp.varbindError(varbinds[0]))
+            // callback(undefined)
+            return
+        } else {
+            console.log (varbinds[0].oid + " = " + varbinds[0].value)
+            getNextRegion(varbinds[0].oid)
+            // callback(String(varbinds[0].value))
+        }
+})
+}
+getNextRegion('1.3.6.1.4.1.1.2.1.1.2')
+
+// _session.getNext(['1.3.6.1.4.1.1.2.1.1.2'], function (error, varbinds) {
+//         if (error) {
+//             console.error ("Error")
+//             console.error (error)
+//             // callback(undefined)
+//             return
+//         }
+    
+//         if (snmp.isVarbindError(varbinds[0])) {
+//             console.error ("No error")
+//             console.error (snmp.varbindError(varbinds[0]))
+//             // callback(undefined)
+//             return
+//         } else {
+//             console.log (varbinds[0].oid + " = " + varbinds[0].value)
+//             getNextRegion(varbinds[0].oid)
+//             // callback(String(varbinds[0].value))
+//         }
+// })
+
 
 // session.trap (snmp.TrapType.LinkDown, function (error) {
 //     if (error)
