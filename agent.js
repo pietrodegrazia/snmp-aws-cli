@@ -12,37 +12,46 @@ var agent = snmp.createAgent({
 
 let currentRegion = "sa-east"
 
-// agent.request({ oid: '.1.3.6.1.4.1.1.2.2', handler: function (req) {
-// 	console.log("OID: Current region")
-// 	const op = req.op
-// 	console.log(SNMP_OPERATIONS_NAME[op])
-//
-// 	switch(op) {
-//
-// 	case SNMP_GET_REQUEST:
-// 		const val = snmp.data.createData({
-// 			type: 'OctetString',
-//     		value: currentRegion
-//     	})
-// 		snmp.provider.readOnlyScalar(req, val)
-//
-// 	case SNMP_SET_REQUEST:
-// 		if (req.value.typename != "OctetString") {
-// 			console.log("wrongType")
-// 			req.done(snmp.pdu.wrongType)
-// 			return
-// 		}
-//     	currentRegion = String(req.value._value)
-//     	AWS.setRegion(currentRegion)
-//
-//     	const val2 = snmp.data.createData({
-// 			type: 'OctetString',
-//     		value: currentRegion
-//     	})
-// 		console.log("Value: " + currentRegion)
-// 		snmp.provider.writableScalar(req, val2)
-// 	}
-// }});
+agent.request({ oid: '.1.3.6.1.4.1.1.2.2', handler: function (req) {
+	console.log("OID: Current region")
+	const op = req.op
+	console.log(SNMP_OPERATIONS_NAME[op])
+
+	switch(op) {
+
+	case SNMP_GET_REQUEST:
+		const val = snmp.data.createData({
+			type: 'OctetString',
+    		value: currentRegion
+    	})
+		snmp.provider.readOnlyScalar(req, val)
+
+	case SNMP_SET_REQUEST:
+		if (req.value.typename != "OctetString") {
+			console.log("wrongType")
+			req.done(snmp.pdu.wrongType)
+			return
+		}
+    	currentRegion = String(req.value._value)
+    	AWS.setRegion(currentRegion)
+
+    	const val2 = snmp.data.createData({
+			type: 'OctetString',
+    		value: currentRegion
+    	})
+		console.log("Value: " + currentRegion)
+		snmp.provider.writableScalar(req, val2)
+	default: 
+		console.log("GET NEXT NOT SUPORTED")
+		const error = snmp.data.createData({
+            type: 'Null',
+            value: snmp.data.noSuchInstance
+        })
+        let oid = "1.3.6.1.4.1.1.2.2"
+		req.done(snmp.pdu.noSuchName)
+		return
+	}
+}});
 
 
 // const regions = [{name: "sa-east-1", endpoint:"www.east.com"},

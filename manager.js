@@ -73,7 +73,7 @@ function getNextRegion(oid) {
         }
     
         if (snmp.isVarbindError(varbinds[0])) {
-            console.error ("No error")
+            console.error ("Error varbind")
             console.error (snmp.varbindError(varbinds[0]))
             // callback(undefined)
             return
