@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(Cookie())
 app.locals.siteURL = "http://localhost:5000/"
 
+app.use('/instances', require('./controllers/instances-controller'))
 app.use('/', require('./controllers/index-controller'))
 app.use('/regions', require('./controllers/index-controller'))
 app.use('/public', express.static(path.join(__dirname, '/public')))
