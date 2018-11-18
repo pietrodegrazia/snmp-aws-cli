@@ -6,17 +6,8 @@ router.get('/', function(req, res) {
 	console.log("GET /")
 	
 	manager.getInstances( function(instances) {
-		res.render('instances-view', {
-			instances: instances
-		})
-	})
-})
-
-
-router.get('/instances', function(req, res) {
-	console.log("GET /")
-
-	manager.getInstances( function(instances) {
+		console.log("Feito!")
+		console.log(instances)
 		res.render('instances-view', {
 			instances: instances
 		})

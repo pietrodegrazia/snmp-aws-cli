@@ -116,43 +116,57 @@ function _getNextRegion(oid, regions, callback) {
     })
 }
 
-function _getNextInstance(oid, regions, callback) {
+function belongsToSameSubtree(oidA, oidB) {
+    let componentsOidA = oidA.split(".").slice(0, 9).join(".")
+    let componentsOidB = oidB.split(".").slice(0, 9).join(".")
+    return componentsOidA === componentsOidB
+}
+
+function _getNextInstance(oid, instances, callback) {
     _session.getNext([oid], function (error, varbinds) {
         if (error) {
             console.error ("Error")
             console.error (error)
-            callback(regions)
+            callback(instances)
             return
         }
 
         if (snmp.isVarbindError(varbinds[0])) {
             console.error ("Error varbind")
             console.error (snmp.varbindError(varbinds[0]))
-            callback(regions)
+            callback(instances)
             return
         } else {
             console.log (varbinds[0].oid + " = " + varbinds[0].value)
-            //do something with value
+            if (! belongsToSameSubtree(oid, varbinds[0].oid) ) {
+                console.log("Out of the subtree")
+                callback(instances)
+                return
+            }
+            
             oid = varbinds[0].oid
-            // let components = oid.split(".")
-            // let index = components[components.length - 1]
-            // let column = components[components.length - 2]
+            let components = oid.split(".")
+            let index = components[components.length - 1]
+            let column = components[components.length - 2]
 
-            // if (!regions[index - 1]) {
-            //     console.log("no region")
-            //     regions.push({})
-            // }
+            if (!instances[index - 1]) {
+                console.log("no instance")
+                instances.push({})
+            }
 
-            // console.log("idx: ", index, " cmp: ",column)
+            console.log("idx: ", index, " cmp: ",column)
+
             // if (column == 1) {
-            //     regions[index - 1].name = String(varbinds[0].value)
+            let description = instances[index - 1].description || ""
+            description = description + " " + String(varbinds[0].value)
+            instances[index - 1].description = description
             //     console.log(regions[index - 1])
             // } else if (column == 2) {
             //     regions[index - 1].endpoint = String(varbinds[0].value)
             //     console.log(regions[index - 1])
             // }
             
-            _getNextInstance(oid, [], callback)
+            _getNextInstance(oid, instances, callback)
         }
     })
 }
