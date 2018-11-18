@@ -1,8 +1,16 @@
 {
-  "name": "teste",
+  "name": "aws-snmp",
   "version": "1.0.0",
   "description": "",
   "main": "agent.js",
+  "bin": "index.js",
+  "pkg": {
+      "assets":
+      [
+        "views/**/*",
+       "public"
+      ]
+   },
   "dependencies": {
     "net-snmp": "^1.2.4",
     "snmpjs": "git+https://github.com/VoltServer/node-snmpjs.git",
