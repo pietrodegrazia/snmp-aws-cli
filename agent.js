@@ -78,9 +78,9 @@ class TableDescription {
 }
 
 let regions = new TableDescription('1.3.6.1.4.1.1.2.1',
-                        function() { return [{name: "sa-east-1", endpoint:"www.east.com"},
-                                             {name: "sa-east-2", endpoint:"www.east-2.com"},
-                                             {name: "sa-east-3", endpoint:"www.3.com"}]},
+                        function() { return [{name: "name-1", endpoint:"end1"},
+                                             {name: "name-2", endpoint:"end2"},
+                                             {name: "name-3", endpoint:"end3"}]},
                         { 1: { type: 'OctetString', columnName: 'name'},
                           2: { type: 'OctetString', columnName: 'endpoint'}});
 
@@ -91,29 +91,35 @@ function addRequestByTableDescription(tableDescription) {
     agent.request({
         oid: tableDescription.getRootOID(), columns: tableDescription.getColumns(), handler: function (prq) {
             let oid = prq.oid;
-            console.log(" ")
-            console.log(" ")
-            console.log("OID: Regions Table: ", oid)
+            console.log("\n\nOID: Regions Table: ", oid)
+            // let filteredOID = oid.replace(tableDescription.getRootOID(), "")
+            // let components = oid.split(".")
+            // console.log("\n\nOID filtrado ", oid, " comp: ", components)
+
             // instance *can* be more than one dot component but for our example
             // we'll treat it like a single array index value
-            let instance = (prq.instance || [0])[0];
-            const column = prq.addr.slice(-2)[0] // last number before instance is column
+            let instance = (prq.instance || [])[0];
+            // let column = components[1]
+            let column = (instance == undefined) ? 1 : prq.addr.slice(-2)[0] // last number before instance is column
             let value = tableDescription.getColumnValue(column, instance); // assume this can return null if instance does not exist
-            // console.log("Value: ", value)
+            console.log("Inst: ", instance, ", Column: ", column, ", Value: ", value, ", Addr: ", prq.addr)
+            
             // iterate for GetNext requests:
             if (snmp.pdu.GetNextRequest === prq.op) {
                 if (!instance) instance = 0; // coerce null or undefined to 0, which wil start @ 1
                 do {
-                    // if ( ++ instance > 3 ) { // determine when you've exhausted all instances and need to move to the next column...
-                    if (++instance > tableDescription.getLength()) { // determine when you've exhausted all instances and need to move to the next column...
+                	instance += 1
+                	console.log(instance, " > ", tableDescription.getLength())
+                    if (instance > tableDescription.getLength()) { // determine when you've exhausted all instances and need to move to the next column...
                         console.log("prq.done()")
                         prq.done(); // this will signal the agent to search for the next OID
                         return;
                     }
+                    column = prq.node.oid[prq.node.oid.length -1]
                     value = tableDescription.getColumnValue(column, instance);
+                    console.log("....Inst: ", instance, ", Column: ", column, ", Value: ", value)
                 }
                 while (!value);
-                // console.log("Passou! Value: ", value)
                 // correct the oid since we're returning the *next* instance not the one in the request:
                 oid = [prq.node.oid, instance].join('.');
             }
@@ -130,40 +136,6 @@ function addRequestByTableDescription(tableDescription) {
         }
     })
 }
-
-// agent.request({ oid: '.1.3.6.1.4.1.1.2.1.1', handler: function (req) {
-// 	console.log("OID: Regions Table - Entry")
-// 	console.log(req.oid)
-// 	const op = req.op
-// 	console.log(SNMP_OPERATIONS_NAME[op])
-// }});
-
-// agent.request({ oid: '.1.3.6.1.4.1.1.2.1.1.1', handler: function (req) {
-// 	console.log("OID: Regions Table - Entry - regionName")
-// 	console.log(req.oid)
-// 	const op = req.op
-// 	console.log(SNMP_OPERATIONS_NAME[op])
-// }});
-
-// agent.request({ oid: '.1.3.6.1.4.1.1.2.1.1.1.0', handler: function (req) {
-// 	console.log("OID: Regions Table - Entry - regionName - 0")
-// 	console.log(req.oid)
-// 	const op = req.op
-// 	console.log(SNMP_OPERATIONS_NAME[op])
-// 	const val = snmp.data.createData({
-// 			type: 'OctetString',
-//     		value: "Region name is....."
-//     	})
-// 		snmp.provider.readOnlyScalar(req, val)
-
-// }});
-
-// agent.request({ oid: '.1.3.6.1.4.1.1.2.1.1.1.2', handler: function (req) {
-// 	console.log("OID: Regions Table - Entry - endpoint")
-// 	console.log(req.oid)
-// 	const op = req.op
-// 	console.log(SNMP_OPERATIONS_NAME[op])
-// }});
 
 console.log("will listen");
 agent.bind({ family: 'udp4', port: 8443 });
