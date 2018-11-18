@@ -8,18 +8,14 @@
   <!-- <h2 id="quick-start">Suas Stations</h2> -->
   <p>Current region: <%= currentRegion.name %>.</p>
 
-  <div class="dropdown">
-    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <%= currentRegion.name %>
-    </a>
 
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-      <% regions.forEach(function(region){ %>
-        <a class="dropdown-item" href="/regions/<%= region.name %>"><%= region.name %></a>
-      <% }); %>
-    </div>
-  </div>
-
+  <ul class="list-group">
+    <% regions.forEach(function(region){ %>
+        <a href="/regions/<%= region.name %>" class="list-group-item list-group-item-action">
+          <%= region.name %> - <%= region.endpoint %>
+        </a>
+    <% }); %>
+  </ul>
 </main>
 
   

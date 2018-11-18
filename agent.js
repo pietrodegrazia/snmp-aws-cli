@@ -86,15 +86,24 @@ class TableDescription {
     }
 }
 
-let regions = new TableDescription('1.3.6.1.4.1.1.2.1',
-                        function() { return [{name: "name-1", endpoint:"end1"},
-                                             {name: "name-2", endpoint:"end2"},
-                                             {name: "name-3", endpoint:"end3"}]},
+
+AWS.getRegions().then(function(data) {
+	let regions = []
+	let results = data.Regions
+	let count = results.length
+	for (let i = 0; i < count; i += 1) {
+		regions.push({
+			name: results[i].RegionName,
+			endpoint: results[i].Endpoint
+		})
+	} 
+	
+	let regionsTable = new TableDescription('1.3.6.1.4.1.1.2.1',
+                        function() { return regions},
                         { 1: { type: 'OctetString', columnName: 'name'},
                           2: { type: 'OctetString', columnName: 'endpoint'}});
-
-
-addRequestByTableDescription(regions)
+	addRequestByTableDescription(regionsTable)
+})
 
 function addRequestByTableDescription(tableDescription) {
     agent.request({

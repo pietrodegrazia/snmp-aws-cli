@@ -56,6 +56,10 @@ class SNMPManager {
             }
         })
     }
+
+    static getRegions(callback) {
+        _getNextRegion('1.3.6.1.4.1.1.2.1', [], callback)
+    }
 }
 module.exports = SNMPManager
 
@@ -63,28 +67,46 @@ module.exports = SNMPManager
 const _session = snmp.createSession("127.0.0.1", "public", options)
 
 
-function getNextRegion(oid) {
+function _getNextRegion(oid, regions, callback) {
     _session.getNext([oid], function (error, varbinds) {
         if (error) {
             console.error ("Error")
             console.error (error)
-            // callback(undefined)
+            callback(regions)
             return
         }
-    
+
         if (snmp.isVarbindError(varbinds[0])) {
             console.error ("Error varbind")
             console.error (snmp.varbindError(varbinds[0]))
-            // callback(undefined)
+            callback(regions)
             return
         } else {
             console.log (varbinds[0].oid + " = " + varbinds[0].value)
-            getNextRegion(varbinds[0].oid)
-            // callback(String(varbinds[0].value))
+            //do something with value
+            oid = varbinds[0].oid
+            let components = oid.split(".")
+            let index = components[components.length - 1]
+            let column = components[components.length - 2]
+
+            if (!regions[index - 1]) {
+                console.log("no region")
+                regions.push({})
+            }
+
+            console.log("idx: ", index, " cmp: ",column)
+            if (column == 1) {
+                regions[index - 1].name = String(varbinds[0].value)
+                console.log(regions[index - 1])
+            } else if (column == 2) {
+                regions[index - 1].endpoint = String(varbinds[0].value)
+                console.log(regions[index - 1])
+            }
+            
+            _getNextRegion(oid, regions, callback)
         }
-})
+    })
 }
-getNextRegion('1.3.6.1.4.1.1.2.1')
 
 // _session.getNext(['1.3.6.1.4.1.1.2.1.1.2'], function (error, varbinds) {
 //         if (error) {
