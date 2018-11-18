@@ -84,7 +84,7 @@ function getNextRegion(oid) {
         }
 })
 }
-getNextRegion('1.3.6.1.4.1.1.2.1.1.2')
+getNextRegion('1.3.6.1.4.1.1.2.1')
 
 // _session.getNext(['1.3.6.1.4.1.1.2.1.1.2'], function (error, varbinds) {
 //         if (error) {

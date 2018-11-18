@@ -66,6 +66,7 @@ class TableDescription {
     }
 
     getColumnValue(column, row) {
+        row--;
         if (!this._columns[column] || !this._values[row] || !this._values[row][this._columns[column].columnName]) return undefined
 
         return { type: this._columns[column].type, value: this._values[row][this._columns[column].columnName]}
