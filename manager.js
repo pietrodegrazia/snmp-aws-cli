@@ -15,6 +15,33 @@ const options = {
 
 
 class SNMPManager {
+
+    static launchInstance(callback) {
+        const varbinds = [{
+            oid: "1.3.6.1.4.1.1.1.1.2.0",
+            type: snmp.ObjectType.OctetString,
+            value: ""
+        }]
+
+        _session.set (varbinds, function (error, varbinds) {
+            if (error) {
+                console.error (error.toString ())
+                callback(undefined)
+                return 
+            }
+
+            if (snmp.isVarbindError(varbinds[0])) {
+                console.error(snmp.varbindError(varbinds[0]))
+                callback(undefined)
+                return
+            } else {
+                console.log (varbinds[0].oid + "|" + varbinds[0].value)
+                callback(String(varbinds[0].value))
+            }
+        })
+    }
+
+
     static getCurrentRegion(callback) {
         _session.get (['1.3.6.1.4.1.1.2.2.0'], function (error, varbinds) {
             if (error) {

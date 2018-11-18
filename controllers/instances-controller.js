@@ -14,4 +14,16 @@ router.get('/', function(req, res) {
 	})
 })
 
+router.get('/create', function(req, res) {
+	console.log("GET /create")
+	
+	manager.launchInstance( function(instanceId) {
+		console.log("Instancia lançada!")
+		console.log(instanceId)
+		res.render('instance-created-view', {
+			instanceId: instanceId
+		})
+	})
+})
+
 module.exports = router

@@ -234,6 +234,32 @@ function addRequestByTableDescription(tableDescription) {
     })
 }
 
+agent.request({ oid: '.1.3.6.1.4.1.1.1.1.2', handler: async function (req) {
+	console.log("OID: Launch instance")
+	const op = req.op
+	console.log(SNMP_OPERATIONS_NAME[op])
+
+	switch(op) {
+
+	case SNMP_SET_REQUEST:
+		let result = await AWS.createInstance()
+		console.log(result)
+		let instanceId = result.Instances[0].InstanceId
+
+    	const val = snmp.data.createData({
+			type: 'OctetString',
+    		value: instanceId
+    	})
+	
+		snmp.provider.writableScalar(req, val)
+
+	default: 
+		console.log("OP NOT SUPORTED")
+		req.done(snmp.pdu.noSuchName)
+		return
+	}
+}});
+
 console.log("will listen");
 agent.bind({ family: 'udp4', port: 8443 });
 console.log("listening");

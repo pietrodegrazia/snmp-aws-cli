@@ -6,13 +6,14 @@
   <h1 class="bd-title" id="content">Instances</h1>
   <p class="bd-lead">These are your instances for the current region.</p>
 
-  <!-- <ul class="list-group"> -->
+  <a href="/instances/create" class="btn btn-primary btn-sm" tabindex="-1" role="button" aria-disabled="true">Launch Instance</a>
+
     <% instances.forEach(function(instance){ %>
     	<p class="bd-lead">
     		<%= instance.description %>
     	</p>
     <% }); %>
-  <!-- </ul> -->
+  
 </main>
 
   
