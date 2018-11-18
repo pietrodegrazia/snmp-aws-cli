@@ -1,11 +1,11 @@
 const snmp = require ("net-snmp")
 
 const options = {
-    port: 161,
+    port: 8443,
     retries: 1,
     timeout: 5000,
     transport: "udp4",
-    trapPort: 162,
+    trapPort: 8444,
     version: snmp.Version2c,
     idBitsSize: 16
 }
