@@ -98,7 +98,7 @@ AWS.getRegions().then(function(data) {
 		})
 	} 
 	
-	let regionsTable = new TableDescription('1.3.6.1.4.1.1.2.1',
+	let regionsTable = new TableDescription('1.3.6.1.4.1.1.2.1.1',
                         function() { return regions},
                         { 1: { type: 'OctetString', columnName: 'name'},
                           2: { type: 'OctetString', columnName: 'endpoint'}});
@@ -108,8 +108,9 @@ AWS.getRegions().then(function(data) {
 function addRequestByTableDescription(tableDescription) {
     agent.request({
         oid: tableDescription.getRootOID(), columns: tableDescription.getColumns(), handler: function (prq) {
+
             let oid = prq.oid;
-            console.log("\n\nOID: Regions Table: ", oid)
+            console.log("\n\nOID: Regions Table: ", oid, ", op: ", prq.op)
             // let filteredOID = oid.replace(tableDescription.getRootOID(), "")
             // let components = oid.split(".")
             // console.log("\n\nOID filtrado ", oid, " comp: ", components)
