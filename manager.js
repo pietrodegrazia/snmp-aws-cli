@@ -149,6 +149,9 @@ function belongsToSameSubtree(oidA, oidB) {
     return componentsOidA === componentsOidB
 }
 
+_getNextInstance('1.3.6.1.4.1.1.1.1', [], function() {
+    
+})
 function _getNextInstance(oid, instances, callback) {
     _session.getNext([oid], function (error, varbinds) {
         if (error) {
