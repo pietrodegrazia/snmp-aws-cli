@@ -72,9 +72,9 @@ class TableDescription {
     async getColumnValue(column, row) {
     	let values = await this._asyncValuesFunc()
         row--;
-        if (!this._columns[column] || !values[row] || !values[row][this._columns[column].columnName]) return undefined
+        if (!this._columns[column] || !values[row]) return undefined
 
-        return { type: this._columns[column].type, value: values[row][this._columns[column].columnName]}
+        return { type: this._columns[column].type, value: values[row][this._columns[column].columnName] || (this._columns[column].type === "OctetString" ? " " : 0)}
     }
 
     getColumns() {
@@ -143,7 +143,7 @@ let instancesTable = new TableDescription('1.3.6.1.4.1.1.1.1.1',
 				stateCode: instance.State.Code,
 				stateName: instance.State.Name,
 				ebsOptimized: (instance.EbsOptimized == "true") ? 1 : 0,
-				launchTime: instance.LaunchTime,
+				launchTime: instance.LaunchTime.toDateString(),
 				privateIpAddress: instance.PrivateIpAddress,
 				vpcId: instance.VpcId,
 				cpuCoreCount: instance.CpuOptions.CoreCount,
@@ -231,7 +231,7 @@ function addRequestByTableDescription(tableDescription) {
                         prq.done(); // this will signal the agent to search for the next OID
                         return;
                     }
-                    column = prq.node.oid[prq.node.oid.length -1]
+                    column = prq.node.addr[prq.node.addr.length -1]
                     value = await tableDescription.getColumnValue(column, instance);
                     console.log("....Inst: ", instance, ", Column: ", column, ", Value: ", value)
                 }
