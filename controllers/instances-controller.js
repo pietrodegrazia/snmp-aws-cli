@@ -26,4 +26,16 @@ router.get('/create', function(req, res) {
 	})
 })
 
+router.get('/delete/:instanceId', function(req, res) {
+	console.log("GET /delete")
+	
+	manager.deleteInstance(req.params.instanceId, function(instanceId) {
+		console.log("Instancia deletada!")
+		console.log(instanceId)
+		res.render('instance-deleted-view', {
+			instanceId: instanceId
+		})
+	})
+})
+
 module.exports = router

@@ -12,7 +12,7 @@
       <thead class="thead-dark">
         <tr>
           <th scope="col">Reservation Id</th>
-          <th scope="col">Owner</th>
+          <th scope="col">Instance Id</th>
           <th scope="col">State</th>
           <th scope="col">Public DNS</th>
           <th scope="col">State Message</th>
@@ -29,6 +29,7 @@
           <th scope="col">Root Device Type</th>
           <th scope="col">Root Device Name</th>
           <th scope="col">Block Volume Id</th>
+          <th scope="col">Delete Instance</th>
         </tr>
       </thead>
       <tbody>
@@ -52,6 +53,7 @@
             <td><%= instance.rootDeviceType %></td>
             <td><%= instance.rootDeviceName %></td>
             <td><%= instance.blockVolumeId %></td>
+            <td><a href="instances/delete/<%= instance.ownerId %>">Terminate instance</a></td>
           </tr>
         <% }); %>
       </tbody>

@@ -130,12 +130,13 @@ let instancesTable = new TableDescription('1.3.6.1.4.1.1.1.1.1',
 		for ( let i = 0; i < count; i += 1 ) {
 			let reservation = reservations[i]
 			let instance = reservation.Instances[0]
-
+			// console.log(instance)
+			// process.exit(0)
 			if (!instance.StateReason) instance.StateReason = {}
 
 			instances.push({
 				reservationId: reservation.ReservationId,
-				ownerId: "ownerId",
+				ownerId: instance.InstanceId,
 				state: instance.State.Name,
 				publicDnsName: instance.PublicDnsName,
 				stateMessage: instance.StateReason.Message,
@@ -244,6 +245,37 @@ agent.request({ oid: '.1.3.6.1.4.1.1.1.1.2', handler: async function (req) {
 		let result = await AWS.createInstance()
 		console.log(result)
 		let instanceId = result.Instances[0].InstanceId
+
+    	const val = snmp.data.createData({
+			type: 'OctetString',
+    		value: instanceId
+    	})
+	
+		snmp.provider.writableScalar(req, val)
+
+	default: 
+		console.log("OP NOT SUPORTED")
+		req.done(snmp.pdu.noSuchName)
+		return
+	}
+}});
+
+agent.request({ oid: '.1.3.6.1.4.1.1.1.1.3', handler: async function (req) {
+	console.log("OID: Terminate instance")
+	const op = req.op
+	console.log(SNMP_OPERATIONS_NAME[op])
+
+	switch(op) {
+
+	case SNMP_SET_REQUEST:
+		if (req.value.typename != "OctetString") {
+			console.log("wrongType")
+			req.done(snmp.pdu.wrongType)
+			return
+		}
+    	instanceId = String(req.value._value)
+    	
+		let result = await AWS.terminateInstance(instanceId)
 
     	const val = snmp.data.createData({
 			type: 'OctetString',
