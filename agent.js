@@ -120,7 +120,6 @@ let instancesTable = new TableDescription('1.3.6.1.4.1.1.1.1.1',
 	async function() { 
 		let now = new Date()
 		let diff = (now.getTime() - cachedInstancesTimestamp.getTime()) / 1000;
-		console.log(diff)
 		if (cachedInstances != undefined && diff < 10 ) {
 			return cachedInstances
 		}
@@ -143,7 +142,7 @@ let instancesTable = new TableDescription('1.3.6.1.4.1.1.1.1.1',
 				stateReasonCode: instance.StateReason.Code,
 				stateCode: instance.State.Code,
 				stateName: instance.State.Name,
-				ebsOptimized: instance.EbsOptimized,
+				ebsOptimized: (instance.EbsOptimized == "true") ? 1 : 0,
 				launchTime: instance.LaunchTime,
 				privateIpAddress: instance.PrivateIpAddress,
 				vpcId: instance.VpcId,
@@ -154,6 +153,26 @@ let instancesTable = new TableDescription('1.3.6.1.4.1.1.1.1.1',
 				rootDeviceName: instance.RootDeviceName,
 				blockVolumeId: ""
 			})
+			// instances.push({
+			// 	reservationId: reservation.ReservationId,
+			// 	ownerId: "ownerId",
+			// 	state: "instance.State.Name",
+			// 	publicDnsName: "instance.PublicDnsName",
+			// 	stateMessage: "instance.StateReason.Message",
+			// 	stateReasonCode: "instance.StateReason.Code",
+			// 	stateCode: 7,
+			// 	stateName: "instance.State.Name",
+			// 	ebsOptimized: 8,
+			// 	launchTime: "instance.LaunchTime",
+			// 	privateIpAddress: "instance.PrivateIpAddress",
+			// 	vpcId: "instance.VpcId",
+			// 	cpuCoreCount: 19,
+			// 	cpuThreadsPerCoreCount: 20,
+			// 	instanceType: "instance.InstanceType",
+			// 	rootDeviceType: "instance.RootDeviceType",
+			// 	rootDeviceName: "instance.RootDeviceName",
+			// 	blockVolumeId: "blockVolumeId"
+			// })
 		}
 		cachedInstances = instances
 		cachedInstancesTimestamp = now
@@ -168,12 +187,12 @@ let instancesTable = new TableDescription('1.3.6.1.4.1.1.1.1.1',
 		6: { type: 'OctetString', columnName: 'stateReasonCode'},
 		7: { type: 'Integer', columnName: 'stateCode'},
 		8: { type: 'OctetString', columnName: 'stateName'},
-		9: { type: 'OctetString', columnName: 'ebsOptimized'},
+		9: { type: 'Integer', columnName: 'ebsOptimized'},
 		10: { type: 'OctetString', columnName: 'launchTime'},
 		11: { type: 'OctetString', columnName: 'privateIpAddress'},
 		12: { type: 'OctetString', columnName: 'vpcId'},
-		13: { type: 'OctetString', columnName: 'cpuCoreCount'},
-		14: { type: 'OctetString', columnName: 'cpuThreadsPerCoreCount'},
+		13: { type: 'Integer', columnName: 'cpuCoreCount'},
+		14: { type: 'Integer', columnName: 'cpuThreadsPerCoreCount'},
 		15: { type: 'OctetString', columnName: 'instanceType'},
 		16: { type: 'OctetString', columnName: 'rootDeviceType'},
 		17: { type: 'OctetString', columnName: 'rootDeviceName'},
