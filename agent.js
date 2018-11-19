@@ -153,26 +153,6 @@ let instancesTable = new TableDescription('1.3.6.1.4.1.1.1.1.1',
 				rootDeviceName: instance.RootDeviceName,
 				blockVolumeId: ""
 			})
-			// instances.push({
-			// 	reservationId: reservation.ReservationId,
-			// 	ownerId: "ownerId",
-			// 	state: "instance.State.Name",
-			// 	publicDnsName: "instance.PublicDnsName",
-			// 	stateMessage: "instance.StateReason.Message",
-			// 	stateReasonCode: "instance.StateReason.Code",
-			// 	stateCode: 7,
-			// 	stateName: "instance.State.Name",
-			// 	ebsOptimized: 8,
-			// 	launchTime: "instance.LaunchTime",
-			// 	privateIpAddress: "instance.PrivateIpAddress",
-			// 	vpcId: "instance.VpcId",
-			// 	cpuCoreCount: 19,
-			// 	cpuThreadsPerCoreCount: 20,
-			// 	instanceType: "instance.InstanceType",
-			// 	rootDeviceType: "instance.RootDeviceType",
-			// 	rootDeviceName: "instance.RootDeviceName",
-			// 	blockVolumeId: "blockVolumeId"
-			// })
 		}
 		cachedInstances = instances
 		cachedInstancesTimestamp = now

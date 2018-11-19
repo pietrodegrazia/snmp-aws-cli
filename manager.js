@@ -149,9 +149,6 @@ function belongsToSameSubtree(oidA, oidB) {
     return componentsOidA === componentsOidB
 }
 
-_getNextInstance('1.3.6.1.4.1.1.1.1', [], function() {
-    
-})
 function _getNextInstance(oid, instances, callback) {
     _session.getNext([oid], function (error, varbinds) {
         if (error) {
@@ -179,22 +176,50 @@ function _getNextInstance(oid, instances, callback) {
             let index = components[components.length - 1]
             let column = components[components.length - 2]
 
+
             if (!instances[index - 1]) {
                 console.log("no instance")
                 instances.push({})
             }
-
-            console.log("idx: ", index, " cmp: ",column)
-
-            // if (column == 1) {
-            let description = instances[index - 1].description || ""
-            description = description + " " + String(varbinds[0].value)
-            instances[index - 1].description = description
-            //     console.log(regions[index - 1])
-            // } else if (column == 2) {
-            //     regions[index - 1].endpoint = String(varbinds[0].value)
-            //     console.log(regions[index - 1])
-            // }
+            
+            switch (parseInt(column)) {
+            case 1:
+                instances[index - 1].reservationId = String(varbinds[0].value)
+            case 2:
+                instances[index - 1].ownerId = String(varbinds[0].value)
+            case 3:
+                instances[index - 1].state = String(varbinds[0].value)
+            case 4:
+                instances[index - 1].publicDnsName = String(varbinds[0].value)
+            case 5:
+                instances[index - 1].stateMessage = String(varbinds[0].value)
+            case 6:
+                instances[index - 1].stateReasonCode = String(varbinds[0].value)
+            case 7:
+                instances[index - 1].stateCode = parseInt(varbinds[0].value)
+            case 8:
+                instances[index - 1].stateName = String(varbinds[0].value)
+            case 9:
+                instances[index - 1].ebsOptimized = parseInt(varbinds[0].value)
+            case 10:
+                instances[index - 1].launchTime = String(varbinds[0].value)
+            case 11:
+                instances[index - 1].privateIpAddress = String(varbinds[0].value)
+            case 12:
+                instances[index - 1].vpcId = String(varbinds[0].value)
+            case 13:
+                instances[index - 1].cpuCoreCount = parseInt(varbinds[0].value)
+            case 14:
+                instances[index - 1].cpuThreadsPerCoreCount = parseInt(varbinds[0].value)
+            case 15:
+                instances[index - 1].instanceType = String(varbinds[0].value)
+            case 16:
+                instances[index - 1].rootDeviceType = String(varbinds[0].value)
+            case 17:
+                instances[index - 1].rootDeviceName = String(varbinds[0].value)
+            case 18:
+                instances[index - 1].blockVolumeId = String(varbinds[0].value)
+            }
             
             _getNextInstance(oid, instances, callback)
         }

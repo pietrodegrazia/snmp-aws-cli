@@ -8,11 +8,54 @@
 
   <a href="/instances/create" class="btn btn-primary btn-sm" tabindex="-1" role="button" aria-disabled="true">Launch Instance</a>
 
-    <% instances.forEach(function(instance){ %>
-    	<p class="bd-lead">
-    		<%= instance.description %>
-    	</p>
-    <% }); %>
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Reservation Id</th>
+          <th scope="col">Owner</th>
+          <th scope="col">State</th>
+          <th scope="col">Public DNS</th>
+          <th scope="col">State Message</th>
+          <th scope="col">State Reason</th>
+          <th scope="col">State Code</th>
+          <th scope="col">State Name</th>
+          <th scope="col">EBS Optimized</th>
+          <th scope="col">Launch Time</th>
+          <th scope="col">Private IP</th>
+          <th scope="col">VPC Id</th>
+          <th scope="col">Core Count</th>
+          <th scope="col">Threads per Core</th>
+          <th scope="col">Instance Type</th>
+          <th scope="col">Root Device Type</th>
+          <th scope="col">Root Device Name</th>
+          <th scope="col">Block Volume Id</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% instances.forEach(function(instance){ %>
+          <tr>
+            <td><%= instance.reservationId %></td>
+            <td><%= instance.ownerId %></td>
+            <td><%= instance.state %></td>
+            <td><%= instance.publicDnsName %></td>
+            <td><%= instance.stateMessage %></td>
+            <td><%= instance.stateReasonCode %></td>
+            <td><%= instance.stateCode %></td>
+            <td><%= instance.stateName %></td>
+            <td><%= instance.ebsOptimized %></td>
+            <td><%= instance.launchTime %></td>
+            <td><%= instance.privateIpAddress %></td>
+            <td><%= instance.vpcId %></td>
+            <td><%= instance.cpuCoreCount %></td>
+            <td><%= instance.cpuThreadsPerCoreCount %></td>
+            <td><%= instance.instanceType %></td>
+            <td><%= instance.rootDeviceType %></td>
+            <td><%= instance.rootDeviceName %></td>
+            <td><%= instance.blockVolumeId %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+</table>
   
 </main>
 
